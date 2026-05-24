@@ -1,8 +1,10 @@
-import { Container, Paper, Stack, Title } from '@mantine/core'
-import type { WorkEntry } from '@/entities/work-entry'
+import { Container, Group, Paper, Stack, Title } from '@mantine/core'
+import { useState } from 'react'
+import type { CreateWorkEntryDto, WorkEntry } from '@/entities/work-entry'
+import { AddWorkEntryModal } from '@/features/add-work-entry'
 import { WorkLogTable } from '@/widgets/work-log-table'
 
-const mockEntries: WorkEntry[] = [
+const initialEntries: WorkEntry[] = [
   {
     id: '1',
     completedAt: '2026-05-20',
@@ -22,15 +24,27 @@ const mockEntries: WorkEntry[] = [
 ]
 
 export function WorkLogPage() {
+  const [entries, setEntries] = useState(initialEntries)
+
+  const handleAddEntry = (dto: CreateWorkEntryDto) => {
+    setEntries((prev) => [
+      { ...dto, id: crypto.randomUUID() },
+      ...prev,
+    ])
+  }
+
   return (
     <Container size="lg" py="xl">
       <Stack gap="lg">
-        <Title order={1}>Журнал работ</Title>
+        <Group justify="space-between" align="center">
+          <Title order={1}>Журнал работ</Title>
+          <AddWorkEntryModal onSubmit={handleAddEntry} />
+        </Group>
 
         <Paper p="md" withBorder>
           <Stack gap="md">
             <Title order={3}>Записи</Title>
-            <WorkLogTable entries={mockEntries} />
+            <WorkLogTable entries={entries} />
           </Stack>
         </Paper>
       </Stack>

@@ -1,1 +1,1 @@
-export type { WorkEntry } from './model/types'
+export type { CreateWorkEntryDto, WorkEntry } from './model/types'

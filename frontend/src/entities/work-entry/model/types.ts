@@ -6,3 +6,5 @@ export type WorkEntry = {
   unit: string
   executorName: string
 }
+
+export type CreateWorkEntryDto = Omit<WorkEntry, 'id'>
