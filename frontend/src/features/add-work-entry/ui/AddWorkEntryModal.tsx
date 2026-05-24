@@ -1,19 +1,31 @@
 import { Button, Modal } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import { notifications } from '@mantine/notifications'
 import { IconPlus } from '@tabler/icons-react'
 import type { CreateWorkEntryDto } from '@/entities/work-entry'
+import { useCreateWorkEntry } from '@/entities/work-entry'
 import { AddWorkEntryForm } from '@/features/add-work-entry/ui/AddWorkEntryForm'
 
-type AddWorkEntryModalProps = {
-  onSubmit: (entry: CreateWorkEntryDto) => void
-}
-
-export function AddWorkEntryModal({ onSubmit }: AddWorkEntryModalProps) {
+export function AddWorkEntryModal() {
   const [opened, { open, close }] = useDisclosure(false)
+  const { mutateAsync, isPending } = useCreateWorkEntry()
 
-  const handleSubmit = (entry: CreateWorkEntryDto) => {
-    onSubmit(entry)
-    close()
+  const handleSubmit = async (entry: CreateWorkEntryDto) => {
+    try {
+      await mutateAsync(entry)
+      notifications.show({
+        title: 'Запись добавлена',
+        message: 'Работа зафиксирована в журнале',
+        color: 'green',
+      })
+      close()
+    } catch {
+      notifications.show({
+        title: 'Ошибка',
+        message: 'Не удалось сохранить запись',
+        color: 'red',
+      })
+    }
   }
 
   return (
@@ -29,7 +41,11 @@ export function AddWorkEntryModal({ onSubmit }: AddWorkEntryModalProps) {
         size="lg"
       >
         {opened && (
-          <AddWorkEntryForm onSubmit={handleSubmit} onCancel={close} />
+          <AddWorkEntryForm
+            onSubmit={handleSubmit}
+            onCancel={close}
+            isSubmitting={isPending}
+          />
         )}
       </Modal>
     </>

@@ -24,23 +24,28 @@ const defaultValues: AddWorkEntryFormValues = {
 }
 
 type AddWorkEntryFormProps = {
-  onSubmit: (entry: CreateWorkEntryDto) => void
+  onSubmit: (entry: CreateWorkEntryDto) => Promise<void>
   onCancel?: () => void
+  isSubmitting?: boolean
 }
 
-export function AddWorkEntryForm({ onSubmit, onCancel }: AddWorkEntryFormProps) {
+export function AddWorkEntryForm({
+  onSubmit,
+  onCancel,
+  isSubmitting = false,
+}: AddWorkEntryFormProps) {
   const {
     control,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting: isFormSubmitting },
   } = useForm<AddWorkEntryFormValues>({
     resolver: zodResolver(addWorkEntrySchema),
     defaultValues,
   })
 
-  const submit = handleSubmit((values) => {
-    onSubmit(prepareWorkEntry(values))
+  const submit = handleSubmit(async (values) => {
+    await onSubmit(prepareWorkEntry(values))
     reset(defaultValues)
   })
 
@@ -136,7 +141,7 @@ export function AddWorkEntryForm({ onSubmit, onCancel }: AddWorkEntryFormProps) 
               Отмена
             </Button>
           )}
-          <Button type="submit" loading={isSubmitting}>
+          <Button type="submit" loading={isFormSubmitting || isSubmitting}>
             Добавить запись
           </Button>
         </Group>
