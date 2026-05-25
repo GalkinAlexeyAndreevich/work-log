@@ -37,7 +37,7 @@
 В корне проекта:
 
 ```bash
-docker compose up --build
+docker compose up
 ```
 
 После старта:
