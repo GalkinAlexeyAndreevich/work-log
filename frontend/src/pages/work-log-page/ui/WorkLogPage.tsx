@@ -1,79 +1,25 @@
-import { Container, Group, Modal, Paper, Stack, Title } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
+import { Container, Group, Paper, Stack, Title } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useMemo, useState } from 'react'
 import {
-  type UpdateWorkEntryDto,
   type WorkEntry,
   useDeleteWorkEntry,
-  useUpdateWorkEntry,
   useWorkEntries,
 } from '@/entities/work-entry'
 import { useWorkTypes } from '@/entities/work-type'
-import {
-  AddWorkEntryModal,
-  WorkEntryForm,
-  type WorkEntryFormValues,
-} from '@/features/add-work-entry'
+import { AddWorkEntryModal, EditWorkEntryModal } from '@/features/work-entry-form'
 import { WorkLogTable } from '@/widgets/work-log-table'
 
 export function WorkLogPage() {
   const { data: entries = [], isLoading, isError } = useWorkEntries()
   const { data: workTypes = [] } = useWorkTypes()
-  const [selectedEntry, setSelectedEntry] = useState<WorkEntry | null>(null)
-  const [isEditOpened, { open: openEditModal, close: closeEditModal }] =
-    useDisclosure(false)
+  const [editingEntry, setEditingEntry] = useState<WorkEntry | null>(null)
   const { mutateAsync: deleteEntry, isPending, variables } = useDeleteWorkEntry()
-  const {
-    mutateAsync: updateEntry,
-    isPending: isUpdating,
-  } = useUpdateWorkEntry()
   const workTypeNamesById = useMemo(
     () =>
       Object.fromEntries(workTypes.map((workType) => [workType.id, workType.name])),
     [workTypes],
   )
-
-  const mapEntryToFormValues = (entry: WorkEntry): WorkEntryFormValues => ({
-    completedAt: new Date(entry.completedAt),
-    workTypeId: entry.workTypeId,
-    volume: entry.volume,
-    unit: entry.unit,
-    executorName: entry.executorName,
-  })
-
-  const handleEditClick = (entry: WorkEntry) => {
-    setSelectedEntry(entry)
-    openEditModal()
-  }
-
-  const handleEditSubmit = async (dto: UpdateWorkEntryDto) => {
-    if (!selectedEntry) {
-      return
-    }
-
-    try {
-      await updateEntry({ id: selectedEntry.id, dto })
-      notifications.show({
-        title: 'Запись обновлена',
-        message: 'Изменения сохранены',
-        color: 'green',
-      })
-      closeEditModal()
-      setSelectedEntry(null)
-    } catch {
-      notifications.show({
-        title: 'Ошибка',
-        message: 'Не удалось обновить запись',
-        color: 'red',
-      })
-    }
-  }
-
-  const handleEditClose = () => {
-    closeEditModal()
-    setSelectedEntry(null)
-  }
 
   const handleDelete = async (id: string) => {
     try {
@@ -108,7 +54,7 @@ export function WorkLogPage() {
               workTypeNamesById={workTypeNamesById}
               isLoading={isLoading}
               hasError={isError}
-              onEdit={handleEditClick}
+              onEdit={setEditingEntry}
               onDelete={handleDelete}
               deletingEntryId={isPending ? variables : undefined}
             />
@@ -116,23 +62,10 @@ export function WorkLogPage() {
         </Paper>
       </Stack>
 
-      <Modal
-        opened={isEditOpened}
-        onClose={handleEditClose}
-        title="Редактировать запись"
-        size="lg"
-      >
-        {selectedEntry && (
-          <WorkEntryForm
-            onSubmit={handleEditSubmit}
-            onCancel={handleEditClose}
-            isSubmitting={isUpdating}
-            initialValues={mapEntryToFormValues(selectedEntry)}
-            submitLabel="Сохранить"
-            resetOnSubmit={false}
-          />
-        )}
-      </Modal>
+      <EditWorkEntryModal
+        entry={editingEntry}
+        onClose={() => setEditingEntry(null)}
+      />
     </Container>
   )
 }

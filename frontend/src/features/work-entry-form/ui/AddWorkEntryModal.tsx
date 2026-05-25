@@ -4,7 +4,7 @@ import { notifications } from '@mantine/notifications'
 import { IconPlus } from '@tabler/icons-react'
 import type { CreateWorkEntryDto } from '@/entities/work-entry'
 import { useCreateWorkEntry } from '@/entities/work-entry'
-import { WorkEntryForm } from '@/features/add-work-entry/ui/WorkEntryForm'
+import { WorkEntryForm } from '@/features/work-entry-form/ui/WorkEntryForm'
 
 export function AddWorkEntryModal() {
   const [opened, { open, close }] = useDisclosure(false)

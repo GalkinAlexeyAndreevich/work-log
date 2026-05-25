@@ -16,11 +16,11 @@ import { useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import type { CreateWorkEntryDto } from '@/entities/work-entry'
 import { useCreateWorkType, useWorkTypes } from '@/entities/work-type'
-import { prepareWorkEntry } from '@/features/add-work-entry/model/prepareWorkEntry'
+import { formValuesToWorkEntryDto } from '@/features/work-entry-form/model/mappers'
 import {
   type WorkEntryFormValues,
   workEntryFormSchema,
-} from '@/features/add-work-entry/model/schema'
+} from '@/features/work-entry-form/model/schema'
 
 const defaultValues: WorkEntryFormValues = {
   completedAt: new Date(),
@@ -76,7 +76,7 @@ export function WorkEntryForm({
   })
 
   const submit = handleSubmit(async (values) => {
-    await onSubmit(prepareWorkEntry(values))
+    await onSubmit(formValuesToWorkEntryDto(values))
     if (resetOnSubmit) {
       reset(defaultValues)
     }
