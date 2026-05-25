@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateWorkEntryDto } from './dto/create-work-entry.dto';
 import { mapWorkEntry } from './work-entry.mapper';
@@ -10,6 +10,7 @@ export class WorkEntriesService {
   async findAll() {
     return this.prisma.workEntry
       .findMany({
+        where: { isDeleted: false },
         orderBy: { completedAt: 'desc' },
       })
       .then((entries) => entries.map(mapWorkEntry));
@@ -24,8 +25,20 @@ export class WorkEntriesService {
           volume: dto.volume,
           unit: dto.unit.trim(),
           executorName: dto.executorName.trim(),
+          isDeleted: false,
         },
       })
       .then(mapWorkEntry);
+  }
+
+  async softDelete(id: string) {
+    const { count } = await this.prisma.workEntry.updateMany({
+      where: { id, isDeleted: false },
+      data: { isDeleted: true },
+    });
+
+    if (count === 0) {
+      throw new NotFoundException('Запись не найдена');
+    }
   }
 }

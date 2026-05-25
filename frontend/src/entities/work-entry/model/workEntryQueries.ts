@@ -25,3 +25,14 @@ export function useCreateWorkEntry() {
     },
   })
 }
+
+export function useDeleteWorkEntry() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => workEntryApi.remove(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: workEntryKeys.all })
+    },
+  })
+}

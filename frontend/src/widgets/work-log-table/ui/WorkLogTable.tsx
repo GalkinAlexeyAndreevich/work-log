@@ -1,4 +1,5 @@
-import { Alert, Center, Loader, Table, Text } from '@mantine/core'
+import { ActionIcon, Alert, Center, Loader, Table, Text } from '@mantine/core'
+import { IconTrash } from '@tabler/icons-react'
 import type { WorkEntry } from '@/entities/work-entry'
 import { formatDisplayDate } from '@/shared/lib/formatDate'
 import { formatVolume } from '@/shared/lib/formatVolume'
@@ -7,12 +8,16 @@ type WorkLogTableProps = {
   entries: WorkEntry[]
   isLoading: boolean
   hasError: boolean
+  onDelete: (id: string) => void
+  deletingEntryId?: string
 }
 
 export function WorkLogTable({
   entries,
   isLoading,
   hasError,
+  onDelete,
+  deletingEntryId,
 }: WorkLogTableProps) {
   if (isLoading) {
     return (
@@ -46,6 +51,7 @@ export function WorkLogTable({
           <Table.Th>Вид работ</Table.Th>
           <Table.Th>Объём</Table.Th>
           <Table.Th>Исполнитель</Table.Th>
+          <Table.Th>Действия</Table.Th>
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
@@ -55,6 +61,17 @@ export function WorkLogTable({
             <Table.Td>{entry.workTypeName}</Table.Td>
             <Table.Td>{formatVolume(entry.volume, entry.unit)}</Table.Td>
             <Table.Td>{entry.executorName}</Table.Td>
+            <Table.Td>
+              <ActionIcon
+                variant="subtle"
+                color="red"
+                aria-label="Удалить запись"
+                onClick={() => onDelete(entry.id)}
+                loading={deletingEntryId === entry.id}
+              >
+                <IconTrash size={16} />
+              </ActionIcon>
+            </Table.Td>
           </Table.Tr>
         ))}
       </Table.Tbody>

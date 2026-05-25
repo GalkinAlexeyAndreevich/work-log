@@ -11,4 +11,8 @@ export const workEntryApi = {
     const { data } = await api.post<WorkEntry>('/work-entries', dto)
     return data
   },
+
+  remove: async (id: string): Promise<void> => {
+    await api.delete(`/work-entries/${id}`)
+  },
 }
