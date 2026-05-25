@@ -7,7 +7,7 @@ export function prepareWorkEntry(
 ): CreateWorkEntryDto {
   return {
     completedAt: toIsoDate(values.completedAt),
-    workTypeName: values.workTypeName.trim(),
+    workTypeId: values.workTypeId,
     volume: values.volume,
     unit: values.unit.trim(),
     executorName: values.executorName.trim(),

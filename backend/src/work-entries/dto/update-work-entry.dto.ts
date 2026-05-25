@@ -3,6 +3,7 @@ import {
   IsNumber,
   IsPositive,
   IsString,
+  IsUUID,
   MinLength,
 } from 'class-validator';
 
@@ -10,9 +11,8 @@ export class UpdateWorkEntryDto {
   @IsDateString()
   completedAt: string;
 
-  @IsString()
-  @MinLength(1)
-  workTypeName: string;
+  @IsUUID()
+  workTypeId: string;
 
   @IsNumber()
   @IsPositive()

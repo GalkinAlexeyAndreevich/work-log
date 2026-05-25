@@ -1,7 +1,7 @@
 export type WorkEntryResponse = {
   id: string;
   completedAt: string;
-  workTypeName: string;
+  workTypeId: string;
   volume: number;
   unit: string;
   executorName: string;
@@ -10,7 +10,7 @@ export type WorkEntryResponse = {
 type WorkEntryEntity = {
   id: string;
   completedAt: Date;
-  workTypeName: string;
+  workTypeId: string;
   volume: { toString(): string };
   unit: string;
   executorName: string;
@@ -20,7 +20,7 @@ export function mapWorkEntry(entry: WorkEntryEntity): WorkEntryResponse {
   return {
     id: entry.id,
     completedAt: entry.completedAt.toISOString().slice(0, 10),
-    workTypeName: entry.workTypeName,
+    workTypeId: entry.workTypeId,
     volume: Number(entry.volume),
     unit: entry.unit,
     executorName: entry.executorName,

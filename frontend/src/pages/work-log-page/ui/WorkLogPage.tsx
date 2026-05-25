@@ -1,7 +1,7 @@
 import { Container, Group, Modal, Paper, Stack, Title } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
   type UpdateWorkEntryDto,
   type WorkEntry,
@@ -9,6 +9,7 @@ import {
   useUpdateWorkEntry,
   useWorkEntries,
 } from '@/entities/work-entry'
+import { useWorkTypes } from '@/entities/work-type'
 import {
   AddWorkEntryModal,
   WorkEntryForm,
@@ -18,6 +19,7 @@ import { WorkLogTable } from '@/widgets/work-log-table'
 
 export function WorkLogPage() {
   const { data: entries = [], isLoading, isError } = useWorkEntries()
+  const { data: workTypes = [] } = useWorkTypes()
   const [selectedEntry, setSelectedEntry] = useState<WorkEntry | null>(null)
   const [isEditOpened, { open: openEditModal, close: closeEditModal }] =
     useDisclosure(false)
@@ -26,10 +28,15 @@ export function WorkLogPage() {
     mutateAsync: updateEntry,
     isPending: isUpdating,
   } = useUpdateWorkEntry()
+  const workTypeNamesById = useMemo(
+    () =>
+      Object.fromEntries(workTypes.map((workType) => [workType.id, workType.name])),
+    [workTypes],
+  )
 
   const mapEntryToFormValues = (entry: WorkEntry): WorkEntryFormValues => ({
     completedAt: new Date(entry.completedAt),
-    workTypeName: entry.workTypeName,
+    workTypeId: entry.workTypeId,
     volume: entry.volume,
     unit: entry.unit,
     executorName: entry.executorName,
@@ -98,6 +105,7 @@ export function WorkLogPage() {
             <Title order={3}>Записи</Title>
             <WorkLogTable
               entries={entries}
+              workTypeNamesById={workTypeNamesById}
               isLoading={isLoading}
               hasError={isError}
               onEdit={handleEditClick}

@@ -6,6 +6,7 @@ import { formatVolume } from '@/shared/lib/formatVolume'
 
 type WorkLogTableProps = {
   entries: WorkEntry[]
+  workTypeNamesById: Record<string, string>
   isLoading: boolean
   hasError: boolean
   onEdit: (entry: WorkEntry) => void
@@ -15,6 +16,7 @@ type WorkLogTableProps = {
 
 export function WorkLogTable({
   entries,
+  workTypeNamesById,
   isLoading,
   hasError,
   onEdit,
@@ -60,7 +62,7 @@ export function WorkLogTable({
         {entries.map((entry) => (
           <Table.Tr key={entry.id}>
             <Table.Td>{formatDisplayDate(entry.completedAt)}</Table.Td>
-            <Table.Td>{entry.workTypeName}</Table.Td>
+            <Table.Td>{workTypeNamesById[entry.workTypeId] ?? '—'}</Table.Td>
             <Table.Td>{formatVolume(entry.volume, entry.unit)}</Table.Td>
             <Table.Td>{entry.executorName}</Table.Td>
             <Table.Td>

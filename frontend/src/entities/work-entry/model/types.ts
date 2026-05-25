@@ -1,11 +1,13 @@
 export type WorkEntry = {
   id: string
   completedAt: string
-  workTypeName: string
+  workTypeId: string
   volume: number
   unit: string
   executorName: string
 }
 
-export type CreateWorkEntryDto = Omit<WorkEntry, 'id'>
-export type UpdateWorkEntryDto = Omit<WorkEntry, 'id'>
+type WorkEntryPayload = Omit<WorkEntry, 'id'>
+
+export type CreateWorkEntryDto = WorkEntryPayload
+export type UpdateWorkEntryDto = WorkEntryPayload

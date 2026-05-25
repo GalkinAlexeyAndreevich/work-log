@@ -10,7 +10,8 @@ datasource db {
 model WorkEntry {
   id           String   @id @default(uuid())
   completedAt  DateTime @map("completed_at") @db.Date
-  workTypeName String   @map("work_type_name") @db.VarChar(255)
+  workTypeId   String   @map("work_type_id")
+  workType     WorkType @relation(fields: [workTypeId], references: [id])
   volume       Decimal  @db.Decimal(10, 2)
   unit         String   @db.VarChar(50)
   executorName String   @map("executor_name") @db.VarChar(255)
@@ -18,4 +19,13 @@ model WorkEntry {
   createdAt    DateTime @default(now()) @map("created_at")
 
   @@map("work_entries")
+}
+
+model WorkType {
+  id          String      @id @default(uuid())
+  name        String      @unique @db.VarChar(255)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  workEntries WorkEntry[]
+
+  @@map("work_types")
 }
