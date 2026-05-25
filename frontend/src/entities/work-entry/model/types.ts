@@ -8,3 +8,4 @@ export type WorkEntry = {
 }
 
 export type CreateWorkEntryDto = Omit<WorkEntry, 'id'>
+export type UpdateWorkEntryDto = Omit<WorkEntry, 'id'>

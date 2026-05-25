@@ -1,4 +1,4 @@
-export { AddWorkEntryForm } from './ui/AddWorkEntryForm'
+export { WorkEntryForm } from './ui/WorkEntryForm'
 export { AddWorkEntryModal } from './ui/AddWorkEntryModal'
 export { prepareWorkEntry } from './model/prepareWorkEntry'
-export type { AddWorkEntryFormValues } from './model/schema'
+export type { WorkEntryFormValues } from './model/schema'

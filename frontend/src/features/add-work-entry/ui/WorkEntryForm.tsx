@@ -11,11 +11,11 @@ import { Controller, useForm } from 'react-hook-form'
 import type { CreateWorkEntryDto } from '@/entities/work-entry'
 import { prepareWorkEntry } from '@/features/add-work-entry/model/prepareWorkEntry'
 import {
-  addWorkEntrySchema,
-  type AddWorkEntryFormValues,
+  type WorkEntryFormValues,
+  workEntryFormSchema,
 } from '@/features/add-work-entry/model/schema'
 
-const defaultValues: AddWorkEntryFormValues = {
+const defaultValues: WorkEntryFormValues = {
   completedAt: new Date(),
   workTypeName: '',
   volume: 1,
@@ -23,30 +23,38 @@ const defaultValues: AddWorkEntryFormValues = {
   executorName: '',
 }
 
-type AddWorkEntryFormProps = {
+type WorkEntryFormProps = {
   onSubmit: (entry: CreateWorkEntryDto) => Promise<void>
   onCancel?: () => void
   isSubmitting?: boolean
+  initialValues?: WorkEntryFormValues
+  submitLabel?: string
+  resetOnSubmit?: boolean
 }
 
-export function AddWorkEntryForm({
+export function WorkEntryForm({
   onSubmit,
   onCancel,
   isSubmitting = false,
-}: AddWorkEntryFormProps) {
+  initialValues = defaultValues,
+  submitLabel = 'Добавить запись',
+  resetOnSubmit = true,
+}: WorkEntryFormProps) {
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting: isFormSubmitting },
-  } = useForm<AddWorkEntryFormValues>({
-    resolver: zodResolver(addWorkEntrySchema),
-    defaultValues,
+  } = useForm<WorkEntryFormValues>({
+    resolver: zodResolver(workEntryFormSchema),
+    defaultValues: initialValues,
   })
 
   const submit = handleSubmit(async (values) => {
     await onSubmit(prepareWorkEntry(values))
-    reset(defaultValues)
+    if (resetOnSubmit) {
+      reset(defaultValues)
+    }
   })
 
   return (
@@ -142,7 +150,7 @@ export function AddWorkEntryForm({
             </Button>
           )}
           <Button type="submit" loading={isFormSubmitting || isSubmitting}>
-            Добавить запись
+            {submitLabel}
           </Button>
         </Group>
       </Stack>

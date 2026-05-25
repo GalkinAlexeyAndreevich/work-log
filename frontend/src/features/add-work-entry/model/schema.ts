@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const addWorkEntrySchema = z.object({
+export const workEntryFormSchema = z.object({
   completedAt: z.date({ message: 'Укажите дату' }),
   workTypeName: z.string().trim().min(1, 'Укажите вид работ'),
   volume: z.number().positive('Объём должен быть больше 0'),
@@ -8,4 +8,4 @@ export const addWorkEntrySchema = z.object({
   executorName: z.string().trim().min(1, 'Укажите исполнителя'),
 })
 
-export type AddWorkEntryFormValues = z.infer<typeof addWorkEntrySchema>
+export type WorkEntryFormValues = z.infer<typeof workEntryFormSchema>

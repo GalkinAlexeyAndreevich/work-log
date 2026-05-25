@@ -1,5 +1,5 @@
-import { ActionIcon, Alert, Center, Loader, Table, Text } from '@mantine/core'
-import { IconTrash } from '@tabler/icons-react'
+import { ActionIcon, Alert, Center, Group, Loader, Table, Text } from '@mantine/core'
+import { IconPencil, IconTrash } from '@tabler/icons-react'
 import type { WorkEntry } from '@/entities/work-entry'
 import { formatDisplayDate } from '@/shared/lib/formatDate'
 import { formatVolume } from '@/shared/lib/formatVolume'
@@ -8,6 +8,7 @@ type WorkLogTableProps = {
   entries: WorkEntry[]
   isLoading: boolean
   hasError: boolean
+  onEdit: (entry: WorkEntry) => void
   onDelete: (id: string) => void
   deletingEntryId?: string
 }
@@ -16,6 +17,7 @@ export function WorkLogTable({
   entries,
   isLoading,
   hasError,
+  onEdit,
   onDelete,
   deletingEntryId,
 }: WorkLogTableProps) {
@@ -62,15 +64,25 @@ export function WorkLogTable({
             <Table.Td>{formatVolume(entry.volume, entry.unit)}</Table.Td>
             <Table.Td>{entry.executorName}</Table.Td>
             <Table.Td>
-              <ActionIcon
-                variant="subtle"
-                color="red"
-                aria-label="Удалить запись"
-                onClick={() => onDelete(entry.id)}
-                loading={deletingEntryId === entry.id}
-              >
-                <IconTrash size={16} />
-              </ActionIcon>
+              <Group gap="xs">
+                <ActionIcon
+                  variant="subtle"
+                  color="blue"
+                  aria-label="Редактировать запись"
+                  onClick={() => onEdit(entry)}
+                >
+                  <IconPencil size={16} />
+                </ActionIcon>
+                <ActionIcon
+                  variant="subtle"
+                  color="red"
+                  aria-label="Удалить запись"
+                  onClick={() => onDelete(entry.id)}
+                  loading={deletingEntryId === entry.id}
+                >
+                  <IconTrash size={16} />
+                </ActionIcon>
+              </Group>
             </Table.Td>
           </Table.Tr>
         ))}

@@ -4,7 +4,7 @@ import { notifications } from '@mantine/notifications'
 import { IconPlus } from '@tabler/icons-react'
 import type { CreateWorkEntryDto } from '@/entities/work-entry'
 import { useCreateWorkEntry } from '@/entities/work-entry'
-import { AddWorkEntryForm } from '@/features/add-work-entry/ui/AddWorkEntryForm'
+import { WorkEntryForm } from '@/features/add-work-entry/ui/WorkEntryForm'
 
 export function AddWorkEntryModal() {
   const [opened, { open, close }] = useDisclosure(false)
@@ -41,7 +41,7 @@ export function AddWorkEntryModal() {
         size="lg"
       >
         {opened && (
-          <AddWorkEntryForm
+          <WorkEntryForm
             onSubmit={handleSubmit}
             onCancel={close}
             isSubmitting={isPending}
